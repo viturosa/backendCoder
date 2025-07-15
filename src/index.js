@@ -13,6 +13,8 @@ const io = new Server(server);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const users = {}
+
 const productsFile = path.join(__dirname, 'data', 'products.json');
 
 
@@ -39,8 +41,24 @@ app.get('/realtimeproducts', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('Usuário conectado:', socket.id);
-
+    socket.on('setNome', (nome) => {
+        users[socket.id] = nome;
+        socket.emit('mensagem', { tipo: 'sistema', texto: `Bem-vindo ${nome}!` });
+        socket.broadcast.emit('mensagem', { tipo: 'sistema', texto: `${nome} entrou no chat!` });
+    
+    socket.broadcast.emit('mensagem', { tipo: 'sistema', texto: `Usuário ${socket.id} conectado`})
+    })
    
+    socket.on('mensagem', (msg) => {
+        io.emit('mensagem',{tipo: 'usuario', texto: msg, remetente});
+    });
+
+    socket.on('disconnect', () => {
+        const nome = users[socket.id] || 'Usuário Desconhecido';
+        delete users[socket.id];
+        io.emit('mensagem', { tipo: 'sistema', texto: ` ${nome} desconectado` });
+    })
+
     const products = JSON.parse(fs.readFileSync(productsFile, 'utf-8'));
     socket.emit('update-products', products);
 

@@ -1,0 +1,16 @@
+<h1>Produtos</h1>
+<ul>
+  {{#each payload}}
+    <li>
+      <strong>{{this.title}}</strong> - R$ {{this.price}} - {{this.category}}
+      <form action="/api/carts/123/products/{{this._id}}" method="POST">
+        <button type="submit">Adicionar ao carrinho</button>
+      </form>
+    </li>
+  {{/each}}
+</ul>
+<nav>
+  {{#if hasPrevPage}}<a href="{{prevLink}}">Anterior</a>{{/if}}
+  Página {{page}}
+  {{#if hasNextPage}}<a href="{{nextLink}}">Próxima</a>{{/if}}
+</nav>

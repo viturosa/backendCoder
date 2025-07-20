@@ -1,22 +1,18 @@
-const express = require('express');
-const CartManager = require('../managers/CartManager');
+import { Router } from 'express';
+import {
+  getCart,
+  deleteProductFromCart,
+  updateAllCartProducts,
+  updateProductQuantity,
+  deleteAllProductsFromCart
+} from '../controllers/cart.controller.js';
 
-const router = express.Router();
-const cm = new CartManager('./data/carts.json');
+const router = Router();
 
-router.post('/', async (req, res) => {
-  const newCart = await cm.createCart();
-  res.status(201).json(newCart);
-});
+router.get('/:cid', getCart);
+router.delete('/:cid/products/:pid', deleteProductFromCart);
+router.put('/:cid', updateAllCartProducts);
+router.put('/:cid/products/:pid', updateProductQuantity);
+router.delete('/:cid', deleteAllProductsFromCart);
 
-router.get('/:cid', async (req, res) => {
-  const cart = await cm.getCartById(req.params.cid);
-  cart ? res.json(cart.products) : res.status(404).json({ error: 'Carrinho não encontrado' });
-});
-
-router.post('/:cid/product/:pid', async (req, res) => {
-  const cart = await cm.addProductToCart(req.params.cid, req.params.pid);
-  cart ? res.json(cart) : res.status(404).json({ error: 'Carrinho não encontrado' });
-});
-
-module.exports = router;
+export default router;

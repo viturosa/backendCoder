@@ -15,13 +15,12 @@ socket.on('mensagem', (msg) => {
     }
     li.textContent = msg.tipo === 'sistema' ? `[SISTEMA]: ${msg.texto}` : ` [${msg.remetente}]: ${msg.texto}`; 
     mensagensList.appendChild(li);
-    li.textContent = msg;
     document.getElementById('messages').appendChild(li);
     mensagensList.scrollTop = mensagensList.scrollHeight;
 });
 
 function sendMessage() {
-    const input = inputMensagem;
+    const input = inputMensagens;
     if (input.value.trim()) {
         socket.emit('mensagem', input.value);
         input.value = '';
@@ -29,7 +28,7 @@ function sendMessage() {
     }
 }
 
-inputMensagens.getElementById('msgInput').addEventListener('keypress', (event) => {
+inputMensagens.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
         sendMessage();
     }

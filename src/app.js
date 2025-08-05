@@ -24,8 +24,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartRouter);
 
-app.get('/', (req, res) => {
-  res.redirect('/api/products'); 
+app.get('/', async (req, res) => {
+  res.render('home'); 
 });
 
 app.get('/realtimeproducts', (req, res) => {

@@ -1,6 +1,37 @@
+<h1>Produtos</h1>
 
+<ul id="lista-produtos">
+</ul>
 
-  <h1>Bem-vindo ao CoderStudent</h1>
-  <p>um eCommerce de teste para visualizar as aplicações apreendidas</p>
+<h2>Adicionar Produto</h2>
+<form id="form-produto">
+  <input type="text" name="title" placeholder="Título" required>
+  <input type="number" name="price" placeholder="Preço" required>
+  <button type="submit">Adicionar</button>
+</form>
 
-  
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  socket.on('update-products', (produtos) => {
+    const lista = document.getElementById('lista-produtos');
+    lista.innerHTML = '';
+    produtos.forEach(p => {
+      const li = document.createElement('li');
+      li.textContent = `${p.title} - R$ ${p.price}`;
+      lista.appendChild(li);
+    });
+  });
+
+  document.getElementById('form-produto').addEventListener('submit', e => {
+    e.preventDefault();
+    const form = e.target;
+    const produto = {
+      title: form.title.value,
+      price: parseFloat(form.price.value)
+    };
+    socket.emit('new-product', produto);
+    form.reset();
+  });
+</script>
